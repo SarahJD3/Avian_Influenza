@@ -14,7 +14,7 @@ Description:
 License: MIT License
 """
 
-def get_consensus_sequence(msa_file, accession_file):
+def get_consensus_sequence(msa_file, accession_file="blank.txt"):
     """
     Given a multiple sequence alignment (MSA) and a file with human host accession numbers,
     this function returns consensus sequences for human and animal viruses.
@@ -45,18 +45,6 @@ def get_consensus_sequence(msa_file, accession_file):
         else:
             animal_seqs.append(record.seq)
 
-    # find ratio of E/K at position 627 (position 641 after accounting for gaps) for human seqs
-    E = 0
-    K = 0
-    other = 0
-    for seq in animal_seqs:
-        if seq[640] == "E":
-            E += 1
-        elif seq[640] == "K":
-            K += 1
-        else:
-            other += 1
-    print("E= " + str(E) + " K = " + str(K) + " Other = " + str(other))
 
     # Identify differences at each position
     sequence_length = len(alignment[0].seq)
@@ -83,7 +71,9 @@ def get_consensus_sequence(msa_file, accession_file):
 
 
 # Obtain the consensus sequence from labeled human accessions and a consensus of everything else
-consensus = (get_consensus_sequence("clustalo-I20250131-012913-0270-28960768-p1m.fa", "HumanAcessions.fa"))
+consensus = (get_consensus_sequence("clustalo-I20250131-012913-0270-28960768-p1m.fa", accession_file="HumanAcessions.fa"))
+
+print(consensus)
 
 # split the tuple into separate variables for future use
 human_consensus = consensus[0]
@@ -91,7 +81,16 @@ animal_consensus = consensus[1]
 
 
 def seq_compare(sequences, length):
-    """ Returns each position that has a difference between two sequences. """
+    """ Given a tuple of sequences returns each position that has a difference between two sequences.
+
+    Parameters:
+    sequences (str): tuple of consensus sequences
+    sequence length (int): length of each consensus
+
+    Returns:
+    List: zero based position of each amino acid difference
+
+    """
     bases_differences = []
     for pos in range(length):
         column = [seq[pos] for seq in sequences]

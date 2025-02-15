@@ -1,6 +1,6 @@
 # Avian Influenza Genomics and Phylogenetics Comparison Tool
 
-This Python program will perfom an analysis that is to be determined potentially including: sequence alignment, blast search, phylogenetic tree construction, and nucleotide and protein comparison. It may also display an interactive choropleth map.
+This Python program will perform an analysis that is to be determined potentially including: sequence alignment, blast search, phylogenetic tree construction, and nucleotide and protein comparison. It may also display an interactive choropleth map.
 
 ## Features
 
@@ -49,6 +49,9 @@ The following Python libraries are required:
 - `seaborn` (>=0.13.2) 
 - `matplotlib` (>=3.10.0) 
 - `bio` (>=1.7.1) 
+- `beautifulsoup4` (>=4.12.3)
+- `future` (>=1.0.0)
+- `pandastable` (>=0.13.1)
 
 ```bash
 pip install -r requirements.txt
@@ -86,49 +89,14 @@ python Main.py
 
 To Be Determined
 
-## Example Project Structure
 
-```
-├── LICENSE # License file for the project 
-│
-├── README.md # Project README with usage instructions 
-│
-├── Main.py # Main entry point for the program 
-│
-├── requirements.txt # Dependencies for the program 
-│
-├── Genetic_Analysis/ # Folder for genetic analysis scripts and resources 
-│   │
-│   ├── init.py # Marks this as a Python package
-│
-│   ├── MUSCLE.py # Multiple Sequence Alignment module
-│
-├── HPAI_maps/ # Folder for HPAI mapping and related functionalities 
-│   │
-│   ├── init.py # Marks this as a Python package 
-│   │
-│   ├── HPAI_map.py # Script for generating HPAI choropleth maps 
-│   │
-│   └── State_Conversion.py # Helper script for state name to abbreviation conversion 
-│
-├── Phylogenetics/ # Folder for phylogenetic analysis scripts and resources
-│   │
-│   ├── init.py # Marks this as a Python package 
-│
-├── Example_files/ # Folder for Example input
-│   │
-│   ├──H5_sequences.fasta  
-│
-├── Output_files/ # Folder for Output
-│   │
-│   ├──  
-```
 
 ## Troubleshooting
 
 - **No output generated:** Check if the input sequence is valid and ensure that Python is correctly installed.
 - **Error in API connection:** Ensure that your system has internet access and the NCBI BLAST API is available.
 - **Invalid input sequence:** If manually entering a sequence, ensure that it is in the correct nucleotide format (e.g., "ATGC").
+- **File not found:** Ensure file path is correct and escape characters are preceded by a \.
 
 ## License
 
