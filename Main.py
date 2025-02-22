@@ -64,7 +64,7 @@ def main():
             print("This is not currently available.\n")
             time.sleep(1)
         elif choice == "3":
-            print(multiple_sequence_welcome())
+            multiple_sequence_welcome()
             exit()
 
         elif choice == "4":

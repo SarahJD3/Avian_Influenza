@@ -10,19 +10,32 @@ from Protein_Analysis.consensus_seq import seq_compare, get_consensus_sequence
 File name: seq_frequency.py
 Author: Debra Pacheco
 Created: 02/01/25
-Version: 1.0
+Version: 1.3
 Description:
-    This script will generate a dictionary of containing the counts of amino acids at each postion from a multiple sequence
-    alignment.
+    This script contains two functions. Calculate_amino_acid_freq takes a multiple sequence alignment file and creates a 
+    dictionary of all amino acid residues at each position.
+    
+    multiple_sequence_welcome allows the user to choose a sequence entry type and generates a table containing the 
+    mutations between consensus sequences using multiple functions.
 
 License: MIT License
 """
 
-# Define default file path
+# Define default file path for animal sequences
 msa_file = "Protein_Analysis/clustalo-I20250131-012913-0270-28960768-p1m.fa"
 
 
 def calculate_amino_acid_freq(msa_file):
+    """ Given a file of sequences returns a dictionary of amino acids at each given position.
+
+    Parameters:
+    msa_file (file path): file path to a FASTA formatted file containing aligned sequence data
+
+    Returns:
+    Dictionary: one based position of amino acids at each position
+
+    """
+
     # Load the alignment
     alignment = AlignIO.read(msa_file, "fasta")
 
@@ -60,7 +73,7 @@ def multiple_sequence_welcome():
 
     file_type = "4"
 
-    print("        Do you have a single sequence or a multiple sequence alignment file?\n")
+    print("  Do you have a single sequence to manually enter or a FASTA multiple sequence alignment file?\n")
     print("                    Please choose from the following options.\n")
 
     print("1. Single Sequence")
@@ -80,12 +93,13 @@ def multiple_sequence_welcome():
             aligner = Align.PairwiseAligner()
             alignments = aligner.align(user_sequence, animal_sequence[1])
 
-#            print(alignments.sequences)
+            #            print(alignments.sequences)
 
             sequence_tuple = (alignments.sequences[0], alignments.sequences[1])
-#            print(sequence_tuple)
+            #            print(sequence_tuple)
             base_differences = seq_compare(sequence_tuple, len(sequence_tuple[0]))
-            df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal, position_count_human,
+            df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal,
+                                       position_count_human,
                                        base_differences)
             show_table(df)
 
@@ -101,8 +115,6 @@ def multiple_sequence_welcome():
         else:
             file_type = input("Invalid choice. Please Enter 1 for single sequence"
                               "\nEnter 2 for a multiple sequence alignment file.\n Or enter 3 to return to main menu.\n")
-
-
 
 
 if __name__ == "__main__":

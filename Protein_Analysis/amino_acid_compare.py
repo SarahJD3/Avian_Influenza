@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import warnings
 
 import pandas as pd
 import tkinter as tk
@@ -37,6 +38,24 @@ position_counts_human = {
 
 
 def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human, mutations):
+
+    """ Given sequences, position counts, and a mutation table this will return a data frame containing the position
+        number, amino acid residues, side chain changes, binding site boolean, and frequency of mutation
+
+    Parameters:
+    human sequence (str): sequence of human consensus
+    animal sequence (str): sequence of animal consensus
+
+    human position count (dict): nested dictionary of position counts
+    animal position count (dict): nested dictionary of position counts
+
+    mutations (list): List of differences between consensus sequences
+
+    Returns:
+    data frame: data frame containing Position, Human Residue, Animal Residue, Mutation, Side Chain Change,
+                               Binding Site?, Mutation Frequency in Animals, Mutation Frequency in Humans
+
+    """
 
     binding_sites = {28, 32, 35, 46, 50, 51, 56, 57, 58, 60, 83, 85, 86, 88, 36, 37, 38, 40, 46, 49, 83, 116, 117, 123,
                      210, 323, 339, 355, 357, 361, 363,
@@ -84,13 +103,15 @@ def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, positio
                            f"{animal_frequency:.2f}%", f"{human_frequency:.2f}%"])
 
     df = pd.DataFrame(table_data,
-                      columns=['Position', 'Human Residue', 'Animal Residue', 'Mutation', 'Side Chain Change',
-                               'Binding Site?', 'Mutation Frequency in Animals', 'Mutation Frequency in Humans'])
+                      columns=['Position', 'User Residue', 'Animal Residue', 'Mutation', 'Side Chain Change',
+                               'Binding Site?', 'Animal Mutation Frequency', 'User Mutation Frequency'])
     return df
     # print(df)
 
 
 def show_table(df):
+    warnings.simplefilter(action='ignore', category=FutureWarning)
+
     root = tk.Tk()
     root.title("Mutation Analysis Table")
 
