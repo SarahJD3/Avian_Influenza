@@ -8,7 +8,7 @@ This Python program will perform an analysis that is to be determined potentiall
 - **BLAST Search**: It connects to the NCBI BLAST service and performs a nucleotide BLAST search.
 - **Sequence Alignment**: (Not Yet Implemented in Main)
 - **Phylogenetic Tree Construction**: (Not Yet Implemented) The Phylogenetic Tree feature will allow visualization of the evolutionary relationships between different H5 strains. It will involve aligning sequences using MAFFT, constructing a tree using PhyML, and analyzing divergence patterns.
-- **Nucleotide and Protein Comparison**: (Not Yet Implemented in Main) 
+- **Nucleotide and Protein Comparison**: (Nucleotide Not Yet Implemented in Main) 
   - The Nucleotide Comparison feature is designed to compare genetic sequences between H5 strains to detect conserved regions and mutations. It will identify SNPs (single nucleotide polymorphisms) and differences in nucleotide composition to assess genetic variation and potential functional changes.
   - The Amino Acid Comparison feature will focus on protein-level differences among H5 strains. It will help us analyze mutations that could impact protein structure, function, and host adaptation. We plan to evaluate amino acid substitutions, hydrophobicity, and potential effects on viral fitness and virulence.
 - **Interactive Choropleth Map**: The Choropleth map shows the yearly cases of highly pathogenic Avian strains of influenza in wildlife in the US. 
@@ -69,11 +69,15 @@ python Main.py
 
 - **input_sequence:** The nucleotide sequence to search. This can either be a FASTA file or a manually entered sequence.
     - If it's a file, use the dialog box to find select the file.
-    - If it's a manually entered sequence, exit out of the dialog box and provide the sequence when prompted.
+    - If it's a manually entered sequence, type or paste a sequence with no spaces or return characters.
 
 ### Output:
 
-- **To Be Determined**
+- **Generate Avian Influenza in Mammals Map**
+  - Generated map can be downloaded as a png file.
+  
+- **Generate Amino Acid Comparison**
+  - Generated table can be saved in various formats.
 
 ### Example Usage:
 
@@ -87,15 +91,21 @@ python Main.py
 
 ### Example Output Format:
 
-To Be Determined
+**Amino Acid Comparison**
+
+| Position | Animal Residue | User Residue | Mutation | Side Chain Change         | Binding Site? | Animal Mutation | User Mutation |
+|----------|----------------|--------------|----------|---------------------------|---------------|-----------------|---------------|
+| 64       | M              | I            | M->I     | Nonpolar->Hydrophobic     | No            | 30.87%          | 75.85%        |
+| 108      | T              | A            | T->A     | Polar->Nonpolar           | No            | 11.80%          | 55.07%        |
+| 339      | K              | T            | K->T     | Positively Charged->Polar | Yes           | 26.09%          | 50.72%        |
 
 
 
 ## Troubleshooting
 
-- **No output generated:** Check if the input sequence is valid and ensure that Python is correctly installed.
-- **Error in API connection:** Ensure that your system has internet access and the NCBI BLAST API is available.
-- **Invalid input sequence:** If manually entering a sequence, ensure that it is in the correct nucleotide format (e.g., "ATGC").
+- **No output generated:** Check if the input sequence or file type is valid and ensure that Python is correctly installed.
+- **Error in API connection:** Ensure that your system has internet access and the API is available.
+- **Invalid input sequence:** If manually entering a sequence, ensure that it is in the correct nucleotide or amino acid format (e.g., "ATGC").
 - **File not found:** Ensure file path is correct and escape characters are preceded by a \.
 
 ## License
