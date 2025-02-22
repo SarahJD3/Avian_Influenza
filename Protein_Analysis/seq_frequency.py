@@ -68,13 +68,14 @@ def multiple_sequence_welcome():
     print("3. Return to main menu")
     print("4. Exit\n")
 
-    choice = input("Enter your choice: ")
-
     while file_type != "3":
 
+        file_type = file_type.strip()
+
         if file_type == "1":
-            user_sequence = input("\nPlease enter your amino acid sequence.")
-            user_sequence = user_sequence.strip()
+            user_sequence = input("\nPlease enter your amino acid sequence.\n")
+            user_sequence = user_sequence.replace("\n", "")
+            user_sequence = user_sequence.replace(" ", "")
             animal_sequence = get_consensus_sequence(msa_file, "Protein_Analysis/HumanAcessions.fa")
             aligner = Align.PairwiseAligner()
             alignments = aligner.align(user_sequence, animal_sequence[1])
@@ -84,8 +85,11 @@ def multiple_sequence_welcome():
             sequence_tuple = (alignments.sequences[0], alignments.sequences[1])
 #            print(sequence_tuple)
             base_differences = seq_compare(sequence_tuple, len(sequence_tuple[0]))
-            df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal, position_count_human)
+            df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal, position_count_human,
+                                       base_differences)
             show_table(df)
+
+            return print("Table generated.")
 
         if file_type == "2":
             msa = input("Please enter multiple sequence alignment file name.")
@@ -96,7 +100,7 @@ def multiple_sequence_welcome():
 
         else:
             file_type = input("Invalid choice. Please Enter 1 for single sequence"
-                              "\nEnter 2 for a multiple sequence alignment file.\n Or enter 3 to return to main menu.")
+                              "\nEnter 2 for a multiple sequence alignment file.\n Or enter 3 to return to main menu.\n")
 
 
 

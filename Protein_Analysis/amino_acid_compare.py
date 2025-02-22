@@ -36,7 +36,7 @@ position_counts_human = {
 
 
 
-def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human):
+def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human, mutations):
 
     binding_sites = {28, 32, 35, 46, 50, 51, 56, 57, 58, 60, 83, 85, 86, 88, 36, 37, 38, 40, 46, 49, 83, 116, 117, 123,
                      210, 323, 339, 355, 357, 361, 363,
