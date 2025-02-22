@@ -65,7 +65,6 @@ def main():
             time.sleep(1)
         elif choice == "3":
             multiple_sequence_welcome()
-            exit()
 
         elif choice == "4":
             print("Exiting program. Goodbye!")

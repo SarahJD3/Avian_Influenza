@@ -3,7 +3,7 @@ import requests
 from Bio import SeqIO, AlignIO, Align
 from collections import Counter
 
-from Protein_Analysis.amino_acid_compare import compare_pb2_mutations, show_table
+from Protein_Analysis.amino_acid_compare import compare_pb2_mutations, show_table, file_selector
 from Protein_Analysis.consensus_seq import seq_compare, get_consensus_sequence
 
 """
@@ -78,38 +78,79 @@ def multiple_sequence_welcome():
 
     print("1. Single Sequence")
     print("2. Multiple Sequence Alignment File")
-    print("3. Return to main menu")
-    print("4. Exit\n")
+    print("3. Exit\n")
 
     while file_type != "3":
 
         file_type = file_type.strip()
 
         if file_type == "1":
+            # Obtain sequence from user and remove white space
             user_sequence = input("\nPlease enter your amino acid sequence.\n")
             user_sequence = user_sequence.replace("\n", "")
             user_sequence = user_sequence.replace(" ", "")
+
+            # Create animal sequence from given data and align user sequence with animal sequence
             animal_sequence = get_consensus_sequence(msa_file, "Protein_Analysis/HumanAcessions.fa")
             aligner = Align.PairwiseAligner()
             alignments = aligner.align(user_sequence, animal_sequence[1])
 
             #            print(alignments.sequences)
 
+            # Prepare sequences for seq_conpare function
             sequence_tuple = (alignments.sequences[0], alignments.sequences[1])
             #            print(sequence_tuple)
             base_differences = seq_compare(sequence_tuple, len(sequence_tuple[0]))
+
+            # Create dataframe
             df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal,
                                        position_count_human,
                                        base_differences)
+
+            # Display tkinter table
             show_table(df)
 
             return print("Table generated.")
 
         if file_type == "2":
-            msa = input("Please enter multiple sequence alignment file name.")
+            file_path = file_selector()
+            position_count_user = calculate_amino_acid_freq(file_path)  # Calculate the frequency of MSA file
+
+
+            # Use all accessions in file as accession list
+            accessions = []
+            for record in SeqIO.parse(file_path, "fasta"):
+                accessions.append(record.id)
+
+            # Human accession file is blank and all accessions from MSA are used to create consensus
+            user_sequence = get_consensus_sequence(file_path, "Protein_Analysis/blank.txt", accession_list=accessions)
+
+            # Create animal sequence from given data and align user sequence with animal sequence
+            animal_sequence = get_consensus_sequence(msa_file, "Protein_Analysis/HumanAcessions.fa")
+            aligner = Align.PairwiseAligner()
+            alignments = aligner.align(user_sequence[1], animal_sequence[1])
+
+            # Prepare sequences for seq_compare function
+            sequence_tuple = (alignments.sequences[0], alignments.sequences[1])
+            base_differences = seq_compare(sequence_tuple, len(sequence_tuple[0]))
+
+            # Create dataframe
+            df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal,
+                                       position_count_user,
+                                       base_differences)
+
+            print(position_count_user)
+            print(position_count_animal)
+            print(base_differences)
+
+            print(df)
+            # Display tkinter table
+            show_table(df)
+
             return print("Table generated.")
 
         if file_type == "3":
+            print("Thank you for using the amino acid comparison program.\nGoodbye.")
             exit()
 
         else:

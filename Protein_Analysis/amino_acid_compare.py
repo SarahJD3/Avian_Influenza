@@ -3,6 +3,7 @@ import warnings
 
 import pandas as pd
 import tkinter as tk
+from tkinter import filedialog
 from pandastable import Table
 
 """
@@ -36,9 +37,7 @@ position_counts_human = {
 }
 
 
-
 def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human, mutations):
-
     """ Given sequences, position counts, and a mutation table this will return a data frame containing the position
         number, amino acid residues, side chain changes, binding site boolean, and frequency of mutation
 
@@ -87,23 +86,25 @@ def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, positio
         animal_residue_zero = animal_seq[zero_based_pos]
 
         # Get mutation frequencies (handling missing data)
+        pos = pos +1
         if pos in position_counts_animal:
             total_count_animal = sum(position_counts_animal[pos].values())
-            animal_frequency = (position_counts_animal[pos].get(animal_residue_zero, 0) / total_count_animal) * 100
+            animal_frequency = (position_counts_animal[pos].get(human_residue, 0) / total_count_animal) * 100
+
         else:
             animal_frequency = 0  # Default to 0% if data is missing
 
         if position_counts_human and pos in position_counts_human:
             total_count_human = sum(position_counts_human[pos].values()) or 1  # Avoid division by zero
-            human_frequency = (position_counts_human[pos].get(human_residue_zero, 0) / total_count_human) * 100
+            human_frequency = (position_counts_human[pos].get(human_residue, 0) / total_count_human) * 100
         else:
             human_frequency = 100
 
-        table_data.append([(pos + 1), animal_residue, human_residue, mutation, side_chain_change, binding_site,
+        table_data.append([pos, animal_residue, human_residue, mutation, side_chain_change, binding_site,
                            f"{animal_frequency:.2f}%", f"{human_frequency:.2f}%"])
 
     df = pd.DataFrame(table_data,
-                      columns=['Position', 'User Residue', 'Animal Residue', 'Mutation', 'Side Chain Change',
+                      columns=['Position', 'Animal Residue', 'User Residue', 'Mutation', 'Side Chain Change',
                                'Binding Site?', 'Animal Mutation Frequency', 'User Mutation Frequency'])
     return df
     # print(df)
@@ -111,6 +112,7 @@ def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, positio
 
 def show_table(df):
     warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
     root = tk.Tk()
     root.title("Mutation Analysis Table")
@@ -124,6 +126,22 @@ def show_table(df):
     root.mainloop()
 
 
-#df = compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human)
+def file_selector():
+    selector = tk.Tk()
+    selector.withdraw()  # Hide the main menu
+
+    file_path = filedialog.askopenfilename(
+        title="Select a File",
+        filetypes=(("Text files", "*.fa"), ("All files", "*.*"))
+    )
+    if file_path:
+        selector.destroy()
+        return file_path
+
+    else:
+         print("No file selected.")
+
+
+# df = compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human)
 # Call this after creating your DataFrame
-#show_table(df)
+# show_table(df)
