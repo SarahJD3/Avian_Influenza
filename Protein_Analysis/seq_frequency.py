@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-
-from Bio import SeqIO, AlignIO
+import requests
+from Bio import SeqIO, AlignIO, Align
 from collections import Counter
+
+from Protein_Analysis.amino_acid_compare import compare_pb2_mutations, show_table
+from Protein_Analysis.consensus_seq import seq_compare, get_consensus_sequence
 
 """
 File name: seq_frequency.py
@@ -15,37 +18,11 @@ Description:
 License: MIT License
 """
 
-# Define file paths
-msa_file = "clustalo-I20250131-012913-0270-28960768-p1m.fa"
-
-# Load the alignment
-alignment = AlignIO.read(msa_file, "fasta")
-
-# List of accession numbers from human hosts
-human_accessions = []
-with open ("HumanAcessions.fa") as file:
-    for line in file:
-        line = file.readline()
-        human_accessions.append(line.strip())
-
-#print(human_accessions)
-
-# Separate human and animal sequences
-human_seqs = []
-animal_seqs = []
-
-for record in alignment:
-    accession = record.id
-    if accession in human_accessions:
-        human_seqs.append(record.seq)
-    else:
-        animal_seqs.append(record.seq)
-
-#print(human_seqs)
+# Define default file path
+msa_file = "Protein_Analysis/clustalo-I20250131-012913-0270-28960768-p1m.fa"
 
 
 def calculate_amino_acid_freq(msa_file):
-
     # Load the alignment
     alignment = AlignIO.read(msa_file, "fasta")
 
@@ -54,8 +31,6 @@ def calculate_amino_acid_freq(msa_file):
     position_frequencies = {}
 
     consensus_position = 0
-
-
 
     for position in range(sequence_length):
         column = [record.seq[position] for record in alignment]
@@ -75,11 +50,61 @@ def calculate_amino_acid_freq(msa_file):
     return position_frequencies
 
 
-# === Example Usage ===
-msa_file = input("Enter the MSA filename: ")
+position_count_animal = calculate_amino_acid_freq(msa_file)
+position_count_human = {}
 
-frequencies = calculate_amino_acid_freq(msa_file)
 
-print("\nAmino Acid Frequencies (Consensus Positions):")
-for pos, freq in frequencies.items():
-    print(f"Position {pos}: {freq}")
+def multiple_sequence_welcome():
+    print("                Welcome to the amino acid comparison program.")
+    print("  You can currently compare amino acid sequences from influenza PB2 segments.\n")
+
+    file_type = "4"
+
+    print("        Do you have a single sequence or a multiple sequence alignment file?\n")
+    print("                    Please choose from the following options.\n")
+
+    print("1. Single Sequence")
+    print("2. Multiple Sequence Alignment File")
+    print("3. Return to main menu")
+    print("4. Exit\n")
+
+    choice = input("Enter your choice: ")
+
+    while file_type != "3":
+
+        if file_type == "1":
+            user_sequence = input("\nPlease enter your amino acid sequence.")
+            user_sequence = user_sequence.strip()
+            animal_sequence = get_consensus_sequence(msa_file, "Protein_Analysis/HumanAcessions.fa")
+            aligner = Align.PairwiseAligner()
+            alignments = aligner.align(user_sequence, animal_sequence[1])
+
+#            print(alignments.sequences)
+
+            sequence_tuple = (alignments.sequences[0], alignments.sequences[1])
+#            print(sequence_tuple)
+            base_differences = seq_compare(sequence_tuple, len(sequence_tuple[0]))
+            df = compare_pb2_mutations(sequence_tuple[0], sequence_tuple[1], position_count_animal, position_count_human)
+            show_table(df)
+
+        if file_type == "2":
+            msa = input("Please enter multiple sequence alignment file name.")
+            return print("Table generated.")
+
+        if file_type == "3":
+            exit()
+
+        else:
+            file_type = input("Invalid choice. Please Enter 1 for single sequence"
+                              "\nEnter 2 for a multiple sequence alignment file.\n Or enter 3 to return to main menu.")
+
+
+
+
+if __name__ == "__main__":
+    msa_file = input("Enter the MSA filename: ")
+    frequencies = calculate_amino_acid_freq(msa_file)
+
+    print("\nAmino Acid Frequencies (Consensus Positions):")
+    for pos, freq in frequencies.items():
+        print(f"Position {pos}: {freq}")

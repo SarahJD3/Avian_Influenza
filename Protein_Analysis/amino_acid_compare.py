@@ -35,6 +35,7 @@ position_counts_human = {
 }
 
 
+
 def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human):
 
     binding_sites = {28, 32, 35, 46, 50, 51, 56, 57, 58, 60, 83, 85, 86, 88, 36, 37, 38, 40, 46, 49, 83, 116, 117, 123,
@@ -51,7 +52,11 @@ def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, positio
 
     # Create table
     table_data = []
+
     for pos in mutations:
+        # Convert 1-based index (from `mutations`) to 0-based for Python sequences
+        zero_based_pos = pos - 1
+
         human_residue = human_seq[pos]
         animal_residue = animal_seq[pos]
         mutation = f"{animal_residue} → {human_residue}"
@@ -59,14 +64,21 @@ def compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, positio
         side_chain_change = f"{aa_properties[animal_residue]} → {aa_properties[human_residue]}"
         binding_site = 'Yes' if (pos + 1) in binding_sites else 'No'
 
-        total_count_animal = sum(position_counts_animal[pos].values())
-        total_count_human = sum(position_counts_human[pos].values())
-        print(animal_seq[pos])
-        print(total_count_human)
+        human_residue_zero = human_seq[zero_based_pos]
+        animal_residue_zero = animal_seq[zero_based_pos]
 
-        animal_frequency = (position_counts_animal[pos].get(animal_residue, 0) / total_count_animal) * 100
-        human_frequency = (position_counts_human[pos].get(human_residue, 0) / total_count_human) * 100
-        print(position_counts_human[pos].get(human_residue))
+        # Get mutation frequencies (handling missing data)
+        if pos in position_counts_animal:
+            total_count_animal = sum(position_counts_animal[pos].values())
+            animal_frequency = (position_counts_animal[pos].get(animal_residue_zero, 0) / total_count_animal) * 100
+        else:
+            animal_frequency = 0  # Default to 0% if data is missing
+
+        if position_counts_human and pos in position_counts_human:
+            total_count_human = sum(position_counts_human[pos].values()) or 1  # Avoid division by zero
+            human_frequency = (position_counts_human[pos].get(human_residue_zero, 0) / total_count_human) * 100
+        else:
+            human_frequency = 100
 
         table_data.append([(pos + 1), animal_residue, human_residue, mutation, side_chain_change, binding_site,
                            f"{animal_frequency:.2f}%", f"{human_frequency:.2f}%"])
@@ -91,6 +103,6 @@ def show_table(df):
     root.mainloop()
 
 
-df = compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human)
+#df = compare_pb2_mutations(human_seq, animal_seq, position_counts_animal, position_counts_human)
 # Call this after creating your DataFrame
-show_table(df)
+#show_table(df)

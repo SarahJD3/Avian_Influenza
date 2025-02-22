@@ -14,7 +14,7 @@ Description:
 License: MIT License
 """
 
-def get_consensus_sequence(msa_file, accession_file="blank.txt"):
+def get_consensus_sequence(msa_file, accession_file):
     """
     Given a multiple sequence alignment (MSA) and a file with human host accession numbers,
     this function returns consensus sequences for human and animal viruses.
@@ -71,13 +71,13 @@ def get_consensus_sequence(msa_file, accession_file="blank.txt"):
 
 
 # Obtain the consensus sequence from labeled human accessions and a consensus of everything else
-consensus = (get_consensus_sequence("clustalo-I20250131-012913-0270-28960768-p1m.fa", accession_file="HumanAcessions.fa"))
+#consensus = (get_consensus_sequence("clustalo-I20250131-012913-0270-28960768-p1m.fa", accession_file="HumanAcessions.fa"))
 
-print(consensus)
+#print(consensus)
 
 # split the tuple into separate variables for future use
-human_consensus = consensus[0]
-animal_consensus = consensus[1]
+#human_consensus = consensus[0]
+#animal_consensus = consensus[1]
 
 
 def seq_compare(sequences, length):
@@ -99,5 +99,5 @@ def seq_compare(sequences, length):
     return bases_differences
 
 
-print(seq_compare(consensus, len(human_consensus)))
+#print(seq_compare(consensus, len(human_consensus)))
 
