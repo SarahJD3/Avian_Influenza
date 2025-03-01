@@ -25,6 +25,7 @@ def generate_map():
     # Detection of Highly Pathogenic Avian Influenza in captive and wild mammals obtained from the USDA website May 2022 to present
     url = "https://www.aphis.usda.gov/sites/default/files/hpai-mammals.csv"  # HPAI_maps Detections in mammals from USDA
 
+
     response = requests.get(url)
     response.raise_for_status()  # Raise an error for bad status codes
 

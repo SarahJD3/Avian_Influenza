@@ -97,7 +97,7 @@ def multiple_sequence_welcome():
 
             #            print(alignments.sequences)
 
-            # Prepare sequences for seq_conpare function
+            # Prepare sequences for seq_compare function
             sequence_tuple = (alignments.sequences[0], alignments.sequences[1])
             #            print(sequence_tuple)
             base_differences = seq_compare(sequence_tuple, len(sequence_tuple[0]))
@@ -139,15 +139,38 @@ def multiple_sequence_welcome():
                                        position_count_user,
                                        base_differences)
 
-            print(position_count_user)
-            print(position_count_animal)
-            print(base_differences)
-
-            print(df)
+#            print(df)
             # Display tkinter table
             show_table(df)
 
-            return print("Table generated.")
+            print("\nTable generated.\n")
+
+            base_query = ""
+
+            while base_query.upper() != "N":
+                print("Would you like to query the amino acid percentages at a specific base?")
+                base_query = input("Y/N\n")
+
+                if base_query.upper() == "Y":
+                    base = int(input("Enter base position.\n"))
+
+                    try:
+                        print("User amino acids at position " + str(base))
+                        for amino_acid in position_count_user[base]:
+                            total_user_count = sum(position_count_user[base].values())
+                            percentage = (position_count_user[base].get(amino_acid, 0) / total_user_count) * 100
+                            print(amino_acid + ':', f"{percentage:.2f}%")
+
+                        print("H5 animal amino acids at position " + str(base))
+                        for amino_acid in position_count_animal[base]:
+                            total_animal_count = sum(position_count_animal[base].values())
+                            percentage = (position_count_animal[base].get(amino_acid, 0) / total_animal_count) * 100
+                            print(amino_acid + ':', f"{percentage:.2f}%")
+
+                    except (IndexError, KeyError):
+                        print("Invalid base position.")
+
+            return print("Exiting Amino Acid Comparison\n")
 
         if file_type == "3":
             print("Thank you for using the amino acid comparison program.\nGoodbye.")
