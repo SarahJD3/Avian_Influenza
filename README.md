@@ -67,9 +67,9 @@ python Main.py
 
 ### Input:
 
-- **input_sequence:** The nucleotide sequence to search. This can either be a FASTA file or a manually entered sequence.
+- **input_sequence:** The nucleotide sequence or amino acid sequence to compare. This can either be a FASTA file or a manually entered sequence.
     - If it's a file, use the dialog box to find select the file.
-    - If it's a manually entered sequence, type or paste a sequence with no spaces or return characters.
+    - If it's a manually entered sequence, type or paste a sequence with no heading line, spaces, or return characters.
 
 ### Output:
 
