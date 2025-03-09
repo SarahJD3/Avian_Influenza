@@ -10,7 +10,7 @@ from Protein_Analysis.seq_frequency import multiple_sequence_welcome
 File name: Main.py
 Author: Debra Pacheco
 Created: 1/25/25
-Version: 1.0
+Version: 1.04
 Description:
     This script will run the Avian Influenza Genomics and Phylogenetics Comparison Tool and will allow the user to
     choose what analysis to run as well as input data if required.

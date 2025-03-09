@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import tkinter as tk
 import requests
 from Bio import SeqIO, AlignIO, Align
 from collections import Counter
@@ -10,7 +12,7 @@ from Protein_Analysis.consensus_seq import seq_compare, get_consensus_sequence
 File name: seq_frequency.py
 Author: Debra Pacheco
 Created: 02/01/25
-Version: 1.3
+Version: 1.4
 Description:
     This script contains two functions. Calculate_amino_acid_freq takes a multiple sequence alignment file and creates a 
     dictionary of all amino acid residues at each position.
@@ -113,9 +115,17 @@ def multiple_sequence_welcome():
             return print("Table generated.")
 
         if file_type == "2":
-            file_path = file_selector()
-            position_count_user = calculate_amino_acid_freq(file_path)  # Calculate the frequency of MSA file
 
+            try:
+                file_path = file_selector()
+            except tk.TclError:
+                file_path = input("Please enter file path.")
+
+            if os.path.exists(file_path):
+                position_count_user = calculate_amino_acid_freq(file_path)  # Calculate the frequency of MSA file
+            else:
+                print("File not found.")
+                exit()
 
             # Use all accessions in file as accession list
             accessions = []
@@ -141,7 +151,10 @@ def multiple_sequence_welcome():
 
 #            print(df)
             # Display tkinter table
-            show_table(df)
+            try:
+                show_table(df)
+            except tk.TclError:
+                print(df)
 
             print("\nTable generated.\n")
 
