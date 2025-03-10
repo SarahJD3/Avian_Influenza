@@ -110,7 +110,10 @@ def multiple_sequence_welcome():
                                        base_differences)
 
             # Display tkinter table
-            show_table(df)
+            try:
+                show_table(df)
+            except tk.TclError:
+                print(df)
 
             return print("Table generated.")
 
@@ -182,6 +185,11 @@ def multiple_sequence_welcome():
 
                     except (IndexError, KeyError):
                         print("Invalid base position.")
+
+                elif base_query.upper() == "N":
+                    continue
+                else:
+                    print("Invalid Entry.")
 
             return print("Exiting Amino Acid Comparison\n")
 
