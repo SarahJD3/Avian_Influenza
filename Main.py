@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+
 from HPAI_maps.HPAI_Animal_map import generate_animal_map
 from HPAI_maps.scrape_fluview import scrape_fluview_data  # Import the scraping function
 from HPAI_maps.HPAI_Human_map import generate_human_map
 from Phylogenetics.Print_tree import show_file_content
+from Protein_Analysis.seq_frequency import multiple_sequence_welcome
 import time
 import plotly.io as pio
 import os
@@ -98,9 +100,12 @@ def main():
             show_file_content("tree_analysis_output.txt")  # Call the function to show the tree
 
 
-        elif choice in {"4", "5"}:
+        elif choice == "4":
             print("This feature is not currently available.\n")
             time.sleep(1)
+
+        elif choice == "5":
+            multiple_sequence_welcome()
 
         elif choice == "6":
             print("Exiting program. Goodbye!")
