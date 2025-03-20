@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 import requests
 from io import StringIO
 import plotly.graph_objects as go
@@ -7,24 +8,26 @@ import plotly.express as px
 import pandas as pd
 from HPAI_maps.State_Conversion import state_conversion
 
+
 """
-File name: HPAI_map.py
+File name: HPAI_Animal_map.py
 Author: Debra Pacheco
 Created: 1/21/25
-Version: 1.2
+Editor: Sarah Schoem
+Edited: 2/13/25
+Version: 1.3
 Description:
-    This script displays a choropleth map of the United States containing highly pathogenic avian influenza
+    This script displays a choropleth map of the United States containing highly pathogenic avian influenza (HPAI)
     animal cases obtained from the Aphis USDA website and filtered by year.
 
 License: MIT License
 """
 
-def generate_map():
+def generate_animal_map():
     # Function to generate and return the map that can be used in Main file
 
     # Detection of Highly Pathogenic Avian Influenza in captive and wild mammals obtained from the USDA website May 2022 to present
     url = "https://www.aphis.usda.gov/sites/default/files/hpai-mammals.csv"  # HPAI_maps Detections in mammals from USDA
-
 
     response = requests.get(url)
     response.raise_for_status()  # Raise an error for bad status codes
@@ -82,7 +85,7 @@ def generate_map():
             label=str(year),
             method="update",
             args=[{"visible": [year == y for y in years]},  # Toggle visibility of traces
-                  {"title": f"State Cases of Highly Pathogenic Avian Influenza in Wild Mammals- {year}"}]
+                  {"title": f"State Cases of Highly Pathogenic Avian Influenza (HPAI) in Wild Mammals- {year}"}]
         )
         for year in years
     ]
