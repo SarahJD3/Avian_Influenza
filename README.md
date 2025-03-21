@@ -1,6 +1,6 @@
 # Avian Influenza Genomics and Phylogenetics Comparison Tool
 
-This Python program will perform an analysis that is to be determined potentially including: sequence alignment, blast search, phylogenetic tree construction, and nucleotide and protein comparison. It may also display an interactive choropleth map.
+This Python program will perform an analysis on Avian Influenza strains including: sequence alignment, blast search, phylogenetic tree construction, and nucleotide and protein comparison. It also displays an interactive choropleth map.
 
 ## Features
 
@@ -11,8 +11,8 @@ This Python program will perform an analysis that is to be determined potentiall
 - **Nucleotide and Protein Comparison**: (Nucleotide Not Yet Implemented in Main) 
   - The Nucleotide Comparison feature is designed to compare genetic sequences between H5 strains to detect conserved regions and mutations. It will identify SNPs (single nucleotide polymorphisms) and differences in nucleotide composition to assess genetic variation and potential functional changes.
   - The Amino Acid Comparison feature will focus on protein-level differences among H5 strains. It will help us analyze mutations that could impact protein structure, function, and host adaptation. We plan to evaluate amino acid substitutions, hydrophobicity, and potential effects on viral fitness and virulence.
-- **Interactive Choropleth Map**: The Choropleth map shows the yearly cases of highly pathogenic Avian strains of influenza in wildlife in the US. 
-  - (Not Yet Implemented) The map will include human cases of H5 Influenza in the US as well as strain data.
+- **Interactive Choropleth Map**: The animal choropleth map shows the yearly cases of highly pathogenic Avian strains of influenza in wildlife in the US. 
+  - The human choropleth map shows human cases of H5 strains since 2024.
 
 
 ## Installation
@@ -52,6 +52,7 @@ The following Python libraries are required:
 - `beautifulsoup4` (>=4.12.3)
 - `future` (>=1.0.0)
 - `pandastable` (>=0.13.1)
+- `selenium` (>=4.30.0)
 
 ```bash
 pip install -r requirements.txt
@@ -75,6 +76,12 @@ python Main.py
 
 - **Generate Avian Influenza in Mammals Map**
   - Generated map can be downloaded as a png file.
+  
+- **Generate Human H5 Cases Map**
+  - Generated map can be downloaded as a png file.
+
+- **Generate Phylogenetic Tree**
+  - Generated tree can be viewed in window.
   
 - **Generate Amino Acid Comparison**
   - Generated table can be saved in various formats.
@@ -103,8 +110,8 @@ python Main.py
 
 ## Troubleshooting
 
-- **No output generated:** Check if the input sequence or file type is valid and ensure that Python is correctly installed.
-- **Error in API connection:** Ensure that your system has internet access and the API is available.
+- **No output generated:** Check if the input sequence or file type is valid and ensure that Python is correctly installed and requirements have been installed via pip.
+- **Error in API connection or CSV download:** Ensure that your system has internet access and the API is available.
 - **Invalid input sequence:** If manually entering a sequence, ensure that it is in the correct nucleotide or amino acid format (e.g., "ATGC").
 - **File not found:** Ensure file path is correct and escape characters are preceded by a \.
 
