@@ -17,7 +17,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
-from webdriver_manager.chrome import ChromeDriverManager
+#from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -33,7 +33,7 @@ def get_next_filename(download_path, base_filename="data-table"):
 
 def scrape_CDC_data():
     # Set up Selenium WebDriver using webdriver-manager to automatically manage the driver
-    service = Service(ChromeDriverManager().install())
+#    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service)
 
     # Open the target webpage

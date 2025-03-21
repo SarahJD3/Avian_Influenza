@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+
+from HPAI_maps import HPAI_Animal_map
 from HPAI_maps.HPAI_Animal_map import generate_animal_map
+from HPAI_maps.scrape_CDC import scrape_CDC_data
 from HPAI_maps.scrape_fluview import scrape_fluview_data  # Import the scraping function
 from HPAI_maps.HPAI_Human_map import generate_human_map
 from Phylogenetics.Print_tree import show_file_content
@@ -51,8 +54,9 @@ def main():
         choice = input("Enter your choice: ")
 
         if choice == "1":   # Avian Influenza in Mammals Map
-            fig = HPAI_Animal_map.generate_animal_map()
+            fig = generate_animal_map()
             print("Animal Map has been generated.\n")
+            fig.show()
 
 
 # Feature disabled
@@ -76,23 +80,23 @@ def main():
             fig.show()
 
         elif choice == "2":  # Generate Human H5 Cases Map
-            print("Fetching FluView data...\n")
+            print("Fetching CDC data..."
+                  "Please allow all pop-ups and do not close them out.\n")
 
-            # Fetch FluView data (no year selection now)
-            fluview_data = scrape_fluview_data()
+            # Fetch CDC data (handles getting the most recent CSV)
+            csv_file_path = scrape_CDC_data()
 
-            # Check if human data was fetched
-            if fluview_data.empty:
+            if csv_file_path is None:
                 print("No human data retrieved.")
             else:
-                fig = generate_human_map()  # Call without passing fluview_data
+                fig = generate_human_map()  # Generate map using the most recent data file
 
                 # Check if the figure was successfully created
                 if fig is not None:
                     print("Human Map has been generated.\n")
                     fig.show()  # Only call show() if fig is not None
                 else:
-                    print("Failed to generate the human map due to missing or invalid 'Year' data.")
+                    print("Failed to generate the human map.")
 
         elif choice == "3":  # Print Phylogenetic Tree on Screen
             print("Fetching Phylogenetic Tree")
