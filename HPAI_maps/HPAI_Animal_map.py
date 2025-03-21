@@ -1,20 +1,11 @@
 #!/usr/bin/env python3
 
-
-import requests
-from io import StringIO
-import plotly.graph_objects as go
-import plotly.express as px
-import pandas as pd
-from HPAI_maps.State_Conversion import state_conversion
-
-
 """
 File name: HPAI_Animal_map.py
 Author: Debra Pacheco
 Created: 1/21/25
 Editor: Sarah Schoem
-Edited: 2/13/25
+Last Edited: 3/9/2025
 Version: 1.3
 Description:
     This script displays a choropleth map of the United States containing highly pathogenic avian influenza (HPAI)
@@ -23,88 +14,91 @@ Description:
 License: MIT License
 """
 
-def generate_animal_map():
-    # Function to generate and return the map that can be used in Main file
+import requests
+from io import StringIO
+import plotly.graph_objects as go
+import pandas as pd
+from HPAI_maps.State_Conversion import state_conversion
 
-    # Detection of Highly Pathogenic Avian Influenza in captive and wild mammals obtained from the USDA website May 2022 to present
-    url = "https://www.aphis.usda.gov/sites/default/files/hpai-mammals.csv"  # HPAI_maps Detections in mammals from USDA
 
+def fetch_usda_data():
+    """Fetches and processes HPAI cases in wild mammals from USDA APHIS."""
+    url = "https://www.aphis.usda.gov/sites/default/files/hpai-mammals.csv"
     response = requests.get(url)
-    response.raise_for_status()  # Raise an error for bad status codes
-
-    # Read the content directly into a pandas DataFrame
+    response.raise_for_status()
     data = pd.read_csv(StringIO(response.text))
-
-    #print(data.tail(30))  # Display the first few rows
-
-    """
-    ***Data Manipulation***
-    """
-
-    # Create a column containing just the year
     data['Year'] = pd.DatetimeIndex(data['Date Detected']).year
-
-    # Create new column in data with the state abbreviation for Choropleth plotting
     data['Abbreviation'] = data['State'].apply(state_conversion)
+    return data.groupby(['Abbreviation', 'Year']).size().reset_index(name='State_Count')
 
-    # Create a new data frame with state counts per year
-    counts_year = data.groupby(['Abbreviation', 'Year']).size().reset_index(name='State_Count')
 
-    # Create new data frame with total state counts
-    counts_total = data.groupby(['Abbreviation']).size().reset_index(name='State_Count')
+def fetch_cdc_livestock_data():
+    """Fetches and processes HPAI cases in avian livestock from the CDC website."""
+    url = "https://www.cdc.gov/bird-flu/modules/situation-summary/commercial-backyard-flocks.csv"
+    response = requests.get(url)
+    response.raise_for_status()
+    data = pd.read_csv(StringIO(response.text))
+    data['Year'] = pd.to_datetime(data['Outbreak Date'], format='mixed').dt.year #different date format than aphis website
+    data['Abbreviation'] = data['State'].apply(state_conversion)
+    return data.groupby(['Abbreviation', 'Year']).size().reset_index(name='Livestock_Count')
 
-    print(data.head())
 
-    """
-    ***Map Plotting***
-    """
+def generate_animal_map():
+    """Generates a choropleth map displaying HPAI cases in both wild mammals and livestock."""
+    wild_mammal_data = fetch_usda_data()
+    livestock_data = fetch_cdc_livestock_data()
 
-    # Create Figure
+    # Merge both datasets
+    merged_data = pd.merge(wild_mammal_data, livestock_data, on=['Abbreviation', 'Year'], how='outer').fillna(0)
+
     fig = go.Figure()
+    years = sorted(merged_data['Year'].unique(), reverse=True)
 
-    # Add traces for each year
-    years = sorted(data['Year'].unique(), reverse=True)
     for year in years:
-        # Filter the data for the specific year
-        yearly_data = counts_year[counts_year['Year'] == year]
-
-        # Add choropleth trace for the year
+        yearly_data = merged_data[merged_data['Year'] == year]
         fig.add_trace(go.Choropleth(
             locations=yearly_data['Abbreviation'],
             z=yearly_data['State_Count'],
             locationmode="USA-states",
             colorscale="portland",
-            colorbar_title="Count",
-            name="",
-            visible=(year == years[0])  # Only the last year is visible by default
+            colorbar_title="Wild Mammal Cases",
+            name=f"Wild Mammals {year}",
+            visible=(year == years[0])
+        ))
+        fig.add_trace(go.Choropleth(
+            locations=yearly_data['Abbreviation'],
+            z=yearly_data['Livestock_Count'],
+            locationmode="USA-states",
+            colorscale="blues",
+            colorbar_title="Livestock Cases",
+            name=f"Livestock {year}",
+            visible=False
         ))
 
-    # Add dropdown menu
     dropdown_buttons = [
-        dict(
-            label=str(year),
-            method="update",
-            args=[{"visible": [year == y for y in years]},  # Toggle visibility of traces
-                  {"title": f"State Cases of Highly Pathogenic Avian Influenza (HPAI) in Wild Mammals- {year}"}]
-        )
-        for year in years
-    ]
+                           dict(label=f"Wild Mammals {year}", method="update",
+                                args=[{"visible": [(i % 2 == 0) and (i // 2 == j) for i in range(2 * len(years))]},
+                                      {"title": f"HPAI Cases in Wild Mammals - {year}"}])
+                           for j, year in enumerate(years)
+                       ] + [
+                           dict(label=f"Livestock {year}", method="update",
+                                args=[{"visible": [(i % 2 == 1) and (i // 2 == j) for i in range(2 * len(years))]},
+                                      {"title": f"HPAI Cases in Avian Livestock - {year}"}])
+                           for j, year in enumerate(years)
+                       ]
 
-    # Update layout with dropdown menu and title
     fig.update_layout(
-        updatemenus=[
-            dict(
-                active=0,
-                buttons=dropdown_buttons,
-                direction="down",
-                showactive=True,
-                x=0.5,
-                y=1.2,
-                xanchor="right",
-                yanchor="top"
-            )
-        ],
-        title=("State Cases of Highly Pathogenic Avian Influenza in Wild Mammals- Current Year"),
+        updatemenus=[dict(
+            active=0,
+            buttons=dropdown_buttons,
+            direction="down",
+            showactive=True,
+            x=0.5,
+            y=1.2,
+            xanchor="right",
+            yanchor="top"
+        )],
+        title="HPAI Cases in Animals - Select Year and Category",
         geo=dict(scope="usa", projection={"type": "albers usa"})
     )
 
