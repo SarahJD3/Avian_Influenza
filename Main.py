@@ -59,26 +59,6 @@ def main():
             fig.show()
 
 
-# Feature disabled
-# Needs kaleido package - also no option to choose which year to print
-            # Option to save map
-#            answer = "0"
-#            while answer != "N":
-#                answer = input("Would you like to save the map to file? Y/N ")
-#                if answer.upper() == "Y":
-#                    image = pio.to_image(fig, format="jpeg")
-#                    with open("HPAI_mammals.jpeg", "wb") as file:
-#                        file.write(image)
-#                if answer.upper() == "N":
-#                    print("Map not saved. Showing map image.\n")
-#                else:
-#                    print("Invalid choice.\nWould you like to save the map? Please choose Y for yes or N for no.\n")
-
-
-
-            # Map is automatically shown on screen
-            fig.show()
-
         elif choice == "2":  # Generate Human H5 Cases Map
             print("Fetching CDC data..."
                   "Please allow all pop-ups and do not close them out.\n")
