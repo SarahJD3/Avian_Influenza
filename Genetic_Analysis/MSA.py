@@ -24,54 +24,64 @@ License: MIT License
 
 url = 'https://www.ebi.ac.uk/Tools/services/rest/kalign'
 
-try:
-    file_path = file_selector()
-except tk.TclError:
-    file_path = input("Please enter file path.")
 
-if os.path.exists(file_path):
-    print("Sending data to EBI Kalign tool")
-else:
-    print("File not found.")
-    exit()
+def nucleotide_MSA():
+    try:
+        file_path = file_selector()
+    except tk.TclError:
+        file_path = input("Please enter file path.")
 
-# Use all accessions in file as accession list
-sequences = ''
+    if os.path.exists(file_path):
+        print("Sending data to EBI Kalign tool")
+    else:
+        print("File not found.")
+        exit()
 
-with open(file_path) as MSA_file:
-    for line in MSA_file:
-        sequences += line
+    # Use all accessions in file as accession list
+    sequences = ''
 
-# print(sequences)
+    with open(file_path) as MSA_file:
+        for line in MSA_file:
+            sequences += line
 
-nucleotide_data = "email=" + 'dpacheco4@student.umgc.edu' + "&stype=" + 'dna' + "&format=" + 'fasta' + "&sequence=" + \
-                  sequences
+    # print(sequences)
 
-headers = {'content-type': 'application/x-www-form-urlencoded', 'accept': 'text/plain'}
+    nucleotide_data = "email=" + 'dpacheco4@student.umgc.edu' + "&stype=" + 'dna' + "&format=" + 'fasta' + "&sequence=" + \
+                      sequences
 
-post_response = requests.post(url + '/run', data=nucleotide_data, headers=headers)
+    headers = {'content-type': 'application/x-www-form-urlencoded', 'accept': 'text/plain'}
 
-print(post_response.status_code)
+    post_response = requests.post(url + '/run', data=nucleotide_data, headers=headers)
 
-if post_response.ok:
-    print("Post created successfully")
-    job_ID = post_response.text
-    print(job_ID)
+    print(post_response.status_code)
 
-    print("Retrieving results. Please wait.")
-    time.sleep(20)
-    get_response = requests.get(f'{url}/result/{job_ID}/fa')
-    print(get_response.status_code)
+    MSA = 'unavailable'
 
-    if get_response.ok:
-        MSA = get_response.text
-        print(MSA)
+    if post_response.ok:
+        print("Post created successfully")
+        job_ID = post_response.text
+        print(job_ID)
+
+        print("Retrieving results. Please wait.")
+        time.sleep(20)
+        get_response = requests.get(f'{url}/result/{job_ID}/fa')
+        print(get_response.status_code)
+
+        if get_response.ok:
+            MSA = get_response.text
+            print(MSA)
+
+        else:
+            print("Alignment not ready. Please wait.")
+            time.sleep(20)
+            MSA = get_response.text
+            # print(MSA)
 
     else:
-        print("Alignment not ready. Please wait.")
-        time.sleep(20)
-        MSA = get_response.text
-        print(MSA)
+        print("Failed to create post")
 
-else:
-    print("Failed to create post")
+    return MSA
+
+
+if __name__ == "__main__":
+    print(nucleotide_MSA())
