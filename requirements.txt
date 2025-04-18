@@ -9,3 +9,4 @@ beautifulsoup4>=4.12.3
 future>=1.0.0
 pandastable>=0.13.1
 selenium>=4.30.0
+paml = 4.9j
