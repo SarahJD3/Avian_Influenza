@@ -4,7 +4,7 @@
 # Author: Sarah Schoem
 
 """
-File name: HPAI_Human_map.py
+File name: Print_tree.py
 Author: Sarah Schoem
 Created: 2/13/25
 Version: 1.0
